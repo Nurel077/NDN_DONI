@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NDN Store - Игровой магазин</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/mega.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-gamepad"></i>
+                    <h1>NDN Store</h1>
+                </div>
+                <nav class="nav">
+                    <a href="#" class="nav-link">Игры</a>
+                    <a href="#" class="nav-link">О нас</a>
+                    <a href="#" class="nav-link">Контакты</a>
+                </nav>
+                
+                <!-- Кнопка профиля -->
+                <button class="btn btn-secondary profile-header-btn" id="profileBtn" style="display: none;">
+                    <i class="fas fa-user-cog"></i>
+                    Профиль
+                </button>
+                
+                <!-- Кнопка меню пользователя -->
+                <button class="btn btn-secondary user-menu-btn" id="userMenuBtn" style="display: none;">
+                    <i class="fas fa-user"></i>
+                </button>
+                
+                <!-- Меню пользователя -->
+                <div class="user-menu" id="userMenu" style="display: none;">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-details">
+                            <span class="user-name" id="userName"></span>
+                            <span class="user-email" id="userEmail"></span>
+                        </div>
+                    </div>
+                    <div class="user-actions">
+                        <button class="user-action-btn" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Выйти
+                        </button>
+                        <button class="user-action-btn danger" id="deleteAccountBtn">
+                            <i class="fas fa-trash"></i>
+                            Удалить аккаунт
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main">
+            <!-- Главная страница -->
+            <section class="hero" id="mainPage">
+                <div class="hero-content">
+                    <h2 class="hero-title">Добро пожаловать в мир игр!</h2>
+                    <p class="hero-description">Откройте для себя удивительную коллекцию игр и получите незабываемые впечатления</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" id="loginBtn">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Войти
+                        </button>
+                        <button class="btn btn-secondary" id="playBtn" style="display: none;">
+                            <i class="fas fa-play"></i>
+                            Начать играть
+                        </button>
+                    </div>
+                    
+                    <!-- Формы входа и регистрации -->
+                    <div class="auth-forms" id="authForms" style="display: none;">
+                        <div class="auth-tabs">
+                            <button class="auth-tab active" id="loginTab">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Вход
+                            </button>
+                            <button class="auth-tab" id="registerTab">
+                                <i class="fas fa-user-plus"></i>
+                                Регистрация
+                            </button>
+                        </div>
+                        
+                        <!-- Форма входа -->
+                        <div class="auth-form active" id="loginForm">
+                            <h3 id="loginFormTitle">Вход в аккаунт</h3>
+                            <form id="loginFormElement">
+                                <div class="form-group">
+                                    <input type="email" id="loginEmail" placeholder="Email" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" id="loginPassword" placeholder="Пароль" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="remember-me">
+                                        <input type="checkbox" id="rememberMe">
+                                        <span>Запомнить меня</span>
+                                    </label>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                    Войти
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="cancelLogin">
+                                    <i class="fas fa-times"></i>
+                                    Отмена
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <!-- Форма регистрации -->
+                        <div class="auth-form" id="registerForm">
+                            <h3 id="registerFormTitle">Регистрация</h3>
+                            <form id="regForm">
+                                <div class="form-group">
+                                    <input type="text" id="username" placeholder="Имя пользователя" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="email" id="email" placeholder="Email" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" id="password" placeholder="Пароль" required>
+                                    <div class="password-strength" id="passwordStrength">
+                                        <div class="strength-bar">
+                                            <div class="strength-fill" id="strengthFill"></div>
+                                        </div>
+                                        <div class="strength-text" id="strengthText">Введите пароль</div>
+                                    </div>
+                                    <div class="password-requirements" id="passwordRequirements">
+                                        <div class="requirement" id="req-length">Минимум 8 символов</div>
+                                        <div class="requirement" id="req-uppercase">Заглавная буква</div>
+                                        <div class="requirement" id="req-lowercase">Строчная буква</div>
+                                        <div class="requirement" id="req-number">Цифра</div>
+                                        <div class="requirement" id="req-special">Специальный символ</div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" id="confirmPassword" placeholder="Подтвердите пароль" required>
+                                    <div class="password-match" id="passwordMatch"></div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-user-plus"></i>
+                                    Зарегистрироваться
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="cancelReg">
+                                    <i class="fas fa-times"></i>
+                                    Отмена
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="game-card">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                </div>
+            </section>
+
+            <section class="features">
+                <div class="feature">
+                    <i class="fas fa-download"></i>
+                    <h3>Быстрая загрузка</h3>
+                    <p>Мгновенная загрузка игр</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Безопасность</h3>
+                    <p>Защищенные платежи</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-headset"></i>
+                    <h3>Поддержка 24/7</h3>
+                    <p>Всегда готовы помочь</p>
+                </div>
+            </section>
+
+            <!-- Страница профиля -->
+            <section class="profile-page" id="profilePage" style="display: none;">
+                <div class="profile-container">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="profile-info">
+                            <h2 id="profileUsername">Имя пользователя</h2>
+                            <p id="profileEmail">email@example.com</p>
+                            <p class="profile-date" id="profileDate">Зарегистрирован: 27.01.2025</p>
+                        </div>
+                        <button class="btn btn-secondary" id="backToMainBtn">
+                            <i class="fas fa-arrow-left"></i>
+                            Назад
+                        </button>
+                    </div>
+
+                    <div class="profile-content">
+                        <div class="profile-tabs">
+                            <button class="profile-tab active" id="profileTab">
+                                <i class="fas fa-user"></i>
+                                Профиль
+                            </button>
+                            <button class="profile-tab" id="settingsTab">
+                                <i class="fas fa-cog"></i>
+                                Настройки
+                            </button>
+                            <button class="profile-tab" id="accountTab">
+                                <i class="fas fa-shield-alt"></i>
+                                Аккаунт
+                            </button>
+                        </div>
+
+                        <!-- Вкладка профиля -->
+                        <div class="profile-section active" id="profileSection">
+                            <h3>Информация о профиле</h3>
+                            <div class="profile-stats">
+                                <div class="stat-card">
+                                    <i class="fas fa-calendar"></i>
+                                    <div class="stat-info">
+                                        <span class="stat-value" id="daysRegistered">0</span>
+                                        <span class="stat-label">дней в системе</span>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <i class="fas fa-gamepad"></i>
+                                    <div class="stat-info">
+                                        <span class="stat-value" id="gamesPlayed">0</span>
+                                        <span class="stat-label">игр сыграно</span>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <i class="fas fa-clock"></i>
+                                    <div class="stat-info">
+                                        <span class="stat-value" id="lastLogin">Сегодня</span>
+                                        <span class="stat-label">последний вход</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Вкладка настроек -->
+                        <div class="profile-section" id="settingsSection">
+                            <h3>Настройки</h3>
+                            
+                            <div class="settings-group">
+                                <h4>Язык интерфейса</h4>
+                                <div class="language-selector">
+                                    <button class="language-btn active" data-lang="ru">
+                                        <span class="flag">🇷🇺</span>
+                                        Русский
+                                    </button>
+                                    <button class="language-btn" data-lang="en">
+                                        <span class="flag">🇺🇸</span>
+                                        English
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="settings-group">
+                                <h4>Тема оформления</h4>
+                                <div class="theme-selector">
+                                    <button class="theme-btn active" data-theme="light">
+                                        <i class="fas fa-sun"></i>
+                                        Светлая
+                                    </button>
+                                    <button class="theme-btn" data-theme="dark">
+                                        <i class="fas fa-moon"></i>
+                                        Темная
+                                    </button>
+                                    <button class="theme-btn" data-theme="auto">
+                                        <i class="fas fa-adjust"></i>
+                                        Авто
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="settings-group">
+                                <h4>Уведомления</h4>
+                                <div class="notification-settings">
+                                    <label class="setting-item">
+                                        <input type="checkbox" id="emailNotifications" checked>
+                                        <span class="checkmark"></span>
+                                        Email уведомления
+                                    </label>
+                                    <label class="setting-item">
+                                        <input type="checkbox" id="gameNotifications" checked>
+                                        <span class="checkmark"></span>
+                                        Уведомления об играх
+                                    </label>
+                                    <label class="setting-item">
+                                        <input type="checkbox" id="newsNotifications">
+                                        <span class="checkmark"></span>
+                                        Новости и обновления
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Вкладка аккаунта -->
+                        <div class="profile-section" id="accountSection">
+                            <h3>Управление аккаунтом</h3>
+                            
+                            <div class="account-actions">
+                                <div class="action-group">
+                                    <h4>Изменение данных</h4>
+                                    <button class="btn btn-primary" id="changeUsernameBtn">
+                                        <i class="fas fa-edit"></i>
+                                        Изменить имя пользователя
+                                    </button>
+                                    <button class="btn btn-secondary" id="changePasswordBtn">
+                                        <i class="fas fa-key"></i>
+                                        Изменить пароль
+                                    </button>
+                                </div>
+
+                                <div class="action-group">
+                                    <h4>Экспорт данных</h4>
+                                    <button class="btn btn-secondary" id="exportDataBtn">
+                                        <i class="fas fa-download"></i>
+                                        Скачать данные
+                                    </button>
+                                </div>
+
+                                <div class="action-group danger">
+                                    <h4>Опасная зона</h4>
+                                    <button class="btn btn-danger" id="logoutAccountBtn">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        Выйти из аккаунта
+                                    </button>
+                                    <button class="btn btn-danger" id="deleteAccountBtn">
+                                        <i class="fas fa-trash"></i>
+                                        Удалить аккаунт
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>NDN Store</h4>
+                    <p>Лучший игровой магазин</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Следите за нами</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 NDN Store. Все права защищены.</p>
+            </div>
+        </footer>
+    </div>
+    <script>
+        // Получаем CSRF токен из cookies для API клиента
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        
+        // Устанавливаем CSRF токен в глобальную переменную
+        window.csrftoken = getCookie('csrftoken');
+    </script>
+    <script src="{% static 'js/api-client.js' %}"></script>
+    <script src="{% static 'js/mega.js' %}"></script>
+</body>
+</html>

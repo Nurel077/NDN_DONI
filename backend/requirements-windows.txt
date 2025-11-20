@@ -1,0 +1,13 @@
+# Альтернативные зависимости для Windows
+# Используйте этот файл, если mysqlclient не устанавливается
+
+Django==5.0.2
+djangorestframework==3.14.0
+django-cors-headers==4.3.1
+pymysql==1.1.0
+Pillow==10.2.0
+
+# После установки раскомментируйте строки в ndnstore/__init__.py:
+# import pymysql
+# pymysql.install_as_MySQLdb()
+
