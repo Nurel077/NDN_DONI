@@ -83,32 +83,22 @@ WSGI_APPLICATION = 'ndnstore.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# Настройка базы данных
-# Для разработки используем SQLite (не требует MySQL)
-# Для продакшена раскомментируйте MySQL настройки ниже
-
+# Настройка базы данных — теперь используем MySQL на Railway
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'railway',
+        'USER': 'root',
+        'PASSWORD': 'WGRcphrKSItPgaGuihOtADSIWGCSOzzV',
+        # Локальный запуск Django → подключаемся через Railway proxy
+        'HOST': 'tramway.proxy.rlwy.net',
+        'PORT': '30930',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'charset': 'utf8mb4',
+        },
     }
 }
-
-# MySQL настройки (раскомментируйте для использования MySQL)
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'ndnstore_db',
-#         'USER': 'root',
-#         'PASSWORD': '',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#         'OPTIONS': {
-#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-#             'charset': 'utf8mb4',
-#         },
-#     }
-# }
 
 
 # Password validation
@@ -166,6 +156,8 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20
+
+    
 }
 
 # CORS settings
