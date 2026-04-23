@@ -234,6 +234,66 @@ venv\Scripts\activate  # Windows
 pip install -r requirements.txt
 ```
 
+## Деплой на Railway
+
+Проект настроен для автоматического деплоя на Railway.
+
+### Подготовка
+
+1. **Переменные окружения на Railway:**
+   - `SECRET_KEY`: Сгенерируйте новый секретный ключ для production
+   - `DEBUG`: Установите `False`
+   - `ALLOWED_HOSTS`: Установите домен Railway (например, `your-app.railway.app`)
+   - MySQL переменные автоматически предоставляются Railway (MYSQL_URL)
+
+2. **База данных:**
+   - Railway автоматически создаст MySQL базу данных
+   - Миграции применятся автоматически при деплое
+   - Начальные данные игр загружаются через команду `load_games`
+
+3. **Статические файлы:**
+   - Собираются автоматически через `collectstatic`
+
+### Деплой
+
+1. Подключите репозиторий к Railway
+2. Railway автоматически обнаружит `railway.json` и настроит билд
+3. При первом деплое применятся миграции и соберутся статические файлы
+
+### После деплоя
+
+1. Создайте суперпользователя:
+   ```bash
+   railway run python backend/manage.py createsuperuser
+   ```
+
+2. Загрузите начальные данные игр:
+   ```bash
+   railway run python backend/manage.py load_games
+   ```
+
+Railway URL будет доступен после деплоя.
+
+### Локальная разработка с Railway базой
+
+Для тестирования с реальной базой данных Railway:
+
+1. Создайте `.env` файл в папке `backend/`:
+   ```
+   SECRET_KEY=django-insecure-test-key-for-local-dev
+   DEBUG=True
+   ALLOWED_HOSTS=localhost,127.0.0.1
+   MYSQL_URL=mysql://root:rlfvvxTKvzpbCkCQyVxdmJNssgAGIbRR@shortline.proxy.rlwy.net:42061/railway
+   ```
+
+2. Примените миграции:
+   ```bash
+   cd backend
+   python manage.py migrate
+   ```
+
+3. Создайте суперпользователя и загрузите данные как указано выше.
+
 ## Лицензия
 
 Проект создан для NDN Store.

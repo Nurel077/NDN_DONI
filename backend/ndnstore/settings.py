@@ -10,7 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+import dj_database_url
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +26,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-4%64aet0rh+gwx*e#96k_m^h&-lro%r^b)t-aa3-=s-j+%a7os'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-4%64aet0rh+gwx*e#96k_m^h&-lro%r^b)t-aa3-=s-j+%a7os')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['*']  # Для разработки разрешаем все хосты
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,railway.app').split(',')
 
 
 # Application definition
@@ -83,22 +89,17 @@ WSGI_APPLICATION = 'ndnstore.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# Настройка базы данных — теперь используем MySQL на Railway
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'railway',
-        'USER': 'root',
-        'PASSWORD': 'WGRcphrKSItPgaGuihOtADSIWGCSOzzV',
-        # Локальный запуск Django → подключаемся через Railway proxy
-        'HOST': 'tramway.proxy.rlwy.net',
-        'PORT': '30930',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'charset': 'utf8mb4',
-        },
+if 'MYSQL_URL' in os.environ:
+    DATABASES = {
+        'default': dj_database_url.parse(os.environ['MYSQL_URL'])
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
@@ -166,6 +167,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://localhost:5500",
     "http://127.0.0.1:5500",
+    "https://railway.app",
     "file://",
 ]
 
@@ -179,6 +181,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://localhost:5500",
     "http://127.0.0.1:5500",
+    "https://railway.app",
 ]
 
 # CSRF настройки
