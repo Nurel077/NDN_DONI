@@ -7,6 +7,7 @@ def home(request):
 
 def api_info(request):
     """Информация об API"""
+    
     return JsonResponse({
         'message': 'NDN Store API',
         'version': '1.0',
